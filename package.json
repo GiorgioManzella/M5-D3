@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/GiorgioManzella/homewwork#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.3",
     "express-list-endpoints": "^6.0.0",
     "uniqid": "^5.4.0"
