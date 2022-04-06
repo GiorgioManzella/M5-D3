@@ -41,7 +41,7 @@ authorsRouter.post("/", (req, res) => {
 
 
   res.status(201)
-  .send({id: newAuthor.id})
+  .send({id: newAuthor})
 });
 
 
