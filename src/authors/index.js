@@ -21,7 +21,6 @@ const authorsJsonPath = join(parentFolder, "authors.json");
 
 authorsRouter.post("/", (req, res) => {
 
-  console.log(req.body);
   const newAuthor = {
     ...req.body,
     createAt: new Date(),

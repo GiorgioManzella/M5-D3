@@ -4,6 +4,7 @@ import listEndpoints from 'express-list-endpoints'
 import authorsRouter from "./authors/index.js"
 import cors from "cors"
 import { genericErrorHandler } from "./authors/errorHandler.js"
+import BlogPostsRouter from "./BlogPost/index.js"
 
 const server = express()
 const port = 3001
@@ -18,6 +19,7 @@ server.use(express.json())
 //endopoints
 
 server.use("/authors", authorsRouter)
+server.use("/BlogPosts", BlogPostsRouter)
 
 // error middlewares
 
