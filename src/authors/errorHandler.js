@@ -1,1 +1,5 @@
-export const genericErrorHandler = ( req, res, err, next)
+export const genericErrorHandler = (err, req, res, next) => {
+    console.log(err)
+    res.statue(500).send({message:"generic server error"})
+    
+}
