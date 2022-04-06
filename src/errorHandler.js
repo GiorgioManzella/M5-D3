@@ -20,6 +20,8 @@ export const unauthorizedErrorHandler = (err, req, res, next) => {
     if(err.status === 401){
         res.status(401)
         .send({message: "err.message", error: "err.errorsList"})
+    }else{
+        next(err)
     }
 
 
