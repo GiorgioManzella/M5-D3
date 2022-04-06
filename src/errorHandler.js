@@ -31,8 +31,8 @@ export const unauthorizedErrorHandler = (err, req, res, next) => {
 
 export const BadAssError = (err,req,res,next) =>{
 
-    if(err.status === 9990){
-        res.status(9999).send(err.status, `It's over 9000!!!`)
+    if(err.status === 207){
+        res.status(207).send(err.status, `It's over 9000!!!`)
     }else{
         next(err)
  }}
