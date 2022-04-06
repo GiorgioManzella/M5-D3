@@ -3,6 +3,7 @@ import express from "express" // <-- NEW IMPORT SYNTAX (remember to add "type": 
 import listEndpoints from 'express-list-endpoints'
 import authorsRouter from "./authors/index.js"
 import cors from "cors"
+import { genericErrorHandler } from "./authors/errorHandler.js"
 
 const server = express()
 const port = 3001
@@ -18,6 +19,9 @@ server.use(express.json())
 
 server.use("/authors", authorsRouter)
 
+// error middlewares
+
+server.use(genericErrorHandler)
 
 server.listen(port, () => {
 

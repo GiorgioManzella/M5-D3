@@ -1,0 +1,1 @@
+export const genericErrorHandler = ( req, res, err, next)
