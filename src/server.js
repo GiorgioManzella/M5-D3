@@ -3,8 +3,10 @@ import express from "express" // <-- NEW IMPORT SYNTAX (remember to add "type": 
 import listEndpoints from 'express-list-endpoints'
 import authorsRouter from "./authors/index.js"
 import cors from "cors"
-import { genericErrorHandler } from "./authors/errorHandler.js"
+import { genericErrorHandler } from "./errorHandler.js"
 import BlogPostsRouter from "./BlogPost/index.js"
+import { badRequestErrorHandler, unauthorizedErrorHandler, notFoundErrorHandler } from "./errorHandler.js"
+
 
 const server = express()
 const port = 3001
@@ -23,7 +25,11 @@ server.use("/BlogPosts", BlogPostsRouter)
 
 // error middlewares
 
-server.use(genericErrorHandler)
+
+server.use(badRequestErrorHandler) // 400
+server.use(unauthorizedErrorHandler) // 401
+server.use(notFoundErrorHandler) // 404
+server.use(genericErrorHandler) // 500
 
 server.listen(port, () => {
 
