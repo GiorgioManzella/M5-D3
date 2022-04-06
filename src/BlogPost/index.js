@@ -76,8 +76,7 @@ BlogPostsRouter.get("/:BlogPostId", (req, res, next) => {
       res.send(selectedBlog);
     } else {
       next(createError(404, `Blog post ${req.params.BlogPostId} not found `));
-    }
-  } catch (error) {
+    }} catch (error) {
     next(error);
   }
 });

@@ -28,6 +28,15 @@ export const unauthorizedErrorHandler = (err, req, res, next) => {
 
 }
 
+
+export const BadAssError = (err,req,res,next) =>{
+
+    if(err.status === 9990){
+        res.status(9999).send(err.status, `It's over 9000!!!`)
+    }else{
+        next(err)
+ }}
+
 export const notFoundErrorHandler = (err, req, res, next) => {
     // if I am responsible of the error I will send the response
     // otherwise next(err)

@@ -26,10 +26,10 @@ server.use("/BlogPosts", BlogPostsRouter)
 // error middlewares
 
 
-server.use(badRequestErrorHandler) // 400
-server.use(unauthorizedErrorHandler) // 401
-server.use(notFoundErrorHandler) // 404
-server.use(genericErrorHandler) // 500
+server.use(badRequestErrorHandler) 
+server.use(unauthorizedErrorHandler) 
+server.use(notFoundErrorHandler)
+server.use(genericErrorHandler) 
 
 server.listen(port, () => {
 
