@@ -1,0 +1,31 @@
+{
+  "name": "homewwork",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "giorgio": "nodemon -e js ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GiorgioManzella/homewwork.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GiorgioManzella/homewwork/issues"
+  },
+  "homepage": "https://github.com/GiorgioManzella/homewwork#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "express-list-endpoints": "^6.0.0",
+    "uniqid": "^5.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
