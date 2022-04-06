@@ -116,9 +116,9 @@ BlogPostsRouter.delete("/:BlogPostId", (req, res, next) => {
       (BlogPost) => BlogPost.id !== req.params.BlogPostId
     );
 
-    fs.writeFileSync(BlogPostsPath, JSON.parse(BlogPostLeft));
-
-    res.status(204).send("Blog Post Deleted");
+    fs.writeFileSync(BlogPostsPath, JSON.stringify(BlogPostLeft));
+    console.log("deleted");
+    res.status(204).send({ message: "Blog Post Deleted" });
   } catch (error) {
     next(error);
   }
