@@ -20,43 +20,85 @@ const writeBlogPost = (content) =>
 
 // POST REQUEST
 
-const async = () =>
-  BlogPostsRouter.post(
-    "/",
-    CheckBlogPostSchema,
-    CheckValidationResult,
-    (req, res, next) => {
-      try {
-        const BlogPost = {
-          ...req.body,
+BlogPostsRouter.post(
+  "/",
 
-          id: uniqid(),
-          category: req.body.category,
-          title: req.body.title,
-          cover: req.body.cover,
-          readTime: {
-            value: req.body.readTime.value,
-            unit: req.body.readTime.unit,
-          },
-          author: {
-            name: req.body.author.name,
-            avatar: req.body.author.avatar,
-          },
-          content: BlogPostsPath,
-          createAt: new Date(),
-        };
+  CheckBlogPostSchema,
+  CheckValidationResult,
 
-        console.log(`New blogPost has been added : ${req.body.title}`);
+  (req, res, next) => {
+    try {
+      const BlogPost = {
+        ...req.body,
 
-        BlogPostsArray.push(BlogPost);
-        writeBlogPost(BlogPostsArray);
+        id: uniqid(),
+        category: req.body.category,
+        title: req.body.title,
+        cover: req.body.cover,
+        readTime: {
+          value: req.body.readTime.value,
+          unit: req.body.readTime.unit,
+        },
+        author: {
+          name: req.body.author.name,
+          avatar: req.body.author.avatar,
+        },
+        content: BlogPostsPath,
+        createAt: new Date(),
+      };
 
-        res.status(201).send("New post created!");
-      } catch (error) {
-        next(error);
-      }
+      console.log(`New blogPost has been added : ${req.body.title}`);
+
+      BlogPostsArray.push(BlogPost);
+      writeBlogPost(BlogPostsArray);
+
+      res.status(201).send("New post created!");
+    } catch (error) {
+      next(error);
     }
-  );
+  }
+);
+
+// post with id for image
+
+BlogPostsRouter.post(
+  "/",
+
+  CheckBlogPostSchema,
+  CheckValidationResult,
+
+  (req, res, next) => {
+    try {
+      const BlogPost = {
+        ...req.body,
+
+        id: uniqid(),
+        category: req.body.category,
+        title: req.body.title,
+        cover: req.body.cover,
+        readTime: {
+          value: req.body.readTime.value,
+          unit: req.body.readTime.unit,
+        },
+        author: {
+          name: req.body.author.name,
+          avatar: req.body.author.avatar,
+        },
+        content: BlogPostsPath,
+        createAt: new Date(),
+      };
+
+      console.log(`New blogPost has been added : ${req.body.title}`);
+
+      BlogPostsArray.push(BlogPost);
+      writeBlogPost(BlogPostsArray);
+
+      res.status(201).send("New post created!");
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 //GET REQUEST
 
@@ -71,7 +113,7 @@ BlogPostsRouter.get("/", async (req, res, next) => {
 
 //GET REQUEST ++ ID
 
-BlogPostsRouter.get("/:BlogPostId", (req, res, next) => {
+BlogPostsRouter.get("/:BlogPostId", async (req, res, next) => {
   try {
     const BlogPostId = req.params.BlogPostId;
 
