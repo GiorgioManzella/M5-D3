@@ -10,7 +10,7 @@ const currentFilePath = fileURLToPath(import.meta.url);
 const parentFolder = dirname(currentFilePath);
 const authorsJsonPath = join(parentFolder, "../Data/authors.json");
 
-authorsRouter.post("/", (req, res) => {
+authorsRouter.post("/", async (req, res) => {
   const newAuthor = {
     ...req.body,
     createAt: new Date(),
@@ -22,11 +22,13 @@ authorsRouter.post("/", (req, res) => {
     avatar: req.body.avatar,
   };
 
-  const authorsArray = JSON.parse(fs.readFileSync(authorsJsonPath));
+  const authorsArray = await getBlogPost();
 
   authorsArray.push(newAuthor);
 
-  fs.writeFileSync(authorsJsonPath, JSON.stringify(authorsArray));
+  //fs.writeFileSync(authorsJsonPath, JSON.stringify(authorsArray));
+
+  await writeAuthors(authorsArray);
 
   res.status(201).send({ id: newAuthor });
 });

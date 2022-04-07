@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import uniqid from "uniqid";
 import createError from "http-errors";
 import { CheckBlogPostSchema, CheckValidationResult } from "./validation.js";
+import { getBlogPost, writeBlogPost } from "../lib/fs-tools.js";
 
 const BlogPostsRouter = express.Router();
 
@@ -13,10 +14,10 @@ const BlogPostsPath = join(
   "../Data/BlogPosts.json"
 );
 
-const BlogPostsArray = JSON.parse(fs.readFileSync(BlogPostsPath));
+//const BlogPostsArray = JSON.parse(fs.readFileSync(BlogPostsPath));
 
-const writeBlogPost = (content) =>
-  fs.writeFileSync(BlogPostsPath, JSON.stringify(BlogPostsArray));
+//const writeBlogPost = (content) =>
+// fs.writeFileSync(BlogPostsPath, JSON.stringify(BlogPostsArray));
 
 // POST REQUEST
 
@@ -25,8 +26,7 @@ BlogPostsRouter.post(
 
   CheckBlogPostSchema,
   CheckValidationResult,
-
-  (req, res, next) => {
+  async (req, res, next) => {
     try {
       const BlogPost = {
         ...req.body,
@@ -43,14 +43,16 @@ BlogPostsRouter.post(
           name: req.body.author.name,
           avatar: req.body.author.avatar,
         },
-        content: BlogPostsPath,
+        content: "",
         createAt: new Date(),
       };
 
       console.log(`New blogPost has been added : ${req.body.title}`);
 
-      BlogPostsArray.push(BlogPost);
-      writeBlogPost(BlogPostsArray);
+      const BlogPostArray = await getBlogPost();
+
+      BlogPostArray.push(BlogPost);
+      writeBlogPost(BlogPostArray);
 
       res.status(201).send("New post created!");
     } catch (error) {
@@ -60,14 +62,10 @@ BlogPostsRouter.post(
 );
 
 // post with id for image
-
 BlogPostsRouter.post(
-  "/",
+  "/:BlogPostId",
 
-  CheckBlogPostSchema,
-  CheckValidationResult,
-
-  (req, res, next) => {
+  async (req, res, next) => {
     try {
       const BlogPost = {
         ...req.body,
@@ -84,14 +82,16 @@ BlogPostsRouter.post(
           name: req.body.author.name,
           avatar: req.body.author.avatar,
         },
-        content: BlogPostsPath,
+        content: "",
         createAt: new Date(),
       };
 
       console.log(`New blogPost has been added : ${req.body.title}`);
 
-      BlogPostsArray.push(BlogPost);
-      writeBlogPost(BlogPostsArray);
+      const BlogPostArray = await getBlogPost();
+
+      BlogPostArray.push(BlogPost);
+      writeBlogPost(BlogPostArray);
 
       res.status(201).send("New post created!");
     } catch (error) {
@@ -99,13 +99,12 @@ BlogPostsRouter.post(
     }
   }
 );
-
 //GET REQUEST
 
 BlogPostsRouter.get("/", async (req, res, next) => {
   try {
-    const BlogPosts = await BlogPostsArray;
-    res.send(BlogPostsArray);
+    const BlogPosts = await getBlogPost();
+    res.send(BlogPosts);
   } catch (error) {
     next(error);
   }
@@ -116,6 +115,8 @@ BlogPostsRouter.get("/", async (req, res, next) => {
 BlogPostsRouter.get("/:BlogPostId", async (req, res, next) => {
   try {
     const BlogPostId = req.params.BlogPostId;
+
+    const BlogPostsArray = await getBlogPost();
 
     const selectedBlog = BlogPostsArray.find(
       (element) => element.id === BlogPostId
@@ -132,21 +133,22 @@ BlogPostsRouter.get("/:BlogPostId", async (req, res, next) => {
 });
 
 //PUT REQUEST
-BlogPostsRouter.put("/:BlogPostId", (req, res, next) => {
+BlogPostsRouter.put("/:BlogPostId", async (req, res, next) => {
   try {
-    const index = BlogPostArray.findIndex(
+    const BlogPostArray = await getBlogPost();
+    const index = await BlogPostArray.findIndex(
       (BlogPost) => BlogPost.id === req.params.BlogPostId
     );
-    const oldBlogPost = BlogPostsArray[index];
+    const oldBlogPost = BlogPostArray[index];
     const updatedBlogPost = {
       ...oldBlogPost,
       ...req.body,
       updatedAt: new Date(),
     };
 
-    BlogPostsArray[index] = updatedBlogPost;
+    BlogPostArray[index] = updatedBlogPost;
 
-    fs.writeFileSync(BlogPostsPath, JSON.stringify(BlogPostArray));
+    await writeBlogPost(BlogPostArray);
 
     res.send(updatedBlogPost);
   } catch (error) {
@@ -155,13 +157,15 @@ BlogPostsRouter.put("/:BlogPostId", (req, res, next) => {
 });
 
 //DELETE REQUEST + ID
-BlogPostsRouter.delete("/:BlogPostId", (req, res, next) => {
+BlogPostsRouter.delete("/:BlogPostId", async (req, res, next) => {
   try {
-    const BlogPostLeft = BlogPostsArray.filter(
+    const BlogPostsArray = await getBlogPost();
+    const BlogPostLeft = await BlogPostsArray.filter(
       (BlogPost) => BlogPost.id !== req.params.BlogPostId
     );
 
     fs.writeFileSync(BlogPostsPath, JSON.stringify(BlogPostLeft));
+    await writeBlogPost(BlogPostsArray);
     console.log("deleted");
     res.status(204).send({ message: "Blog Post Deleted" });
   } catch (error) {

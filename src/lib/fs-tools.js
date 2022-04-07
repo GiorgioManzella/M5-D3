@@ -1,14 +1,14 @@
-import { writeJSON } from "fs-extra";
+import fs from "fs-extra";
 import { fileURLToPath } from "url";
 import { join, dirname } from "path";
 
-const { readJSON, writeJSON } = fs;
+const { readJSON, writeJSON, writeFile } = fs;
 
 const dataFolderPath = join(dirname(fileURLToPath(import.meta.url)), "../Data");
-const BlogPostsPath = join(dataFolderPath, "/BlogPosts.js");
-const AuthorsPath = join(dataFolderPath, "/authors.js");
+const BlogPostsPath = join(dataFolderPath, "/BlogPosts.json");
+const AuthorsPath = join(dataFolderPath, "/authors.json");
 
 export const getBlogPost = () => readJSON(BlogPostsPath);
-export const writeBlogPost = () => writeJSON(BlogPostsPath, content);
+export const writeBlogPost = (content) => writeJSON(BlogPostsPath, content);
 export const getAuthors = () => readJSON(AuthorsPath);
-export const writeAuthors = () => writeJSON(AuthorsPath, content);
+export const writeAuthors = (content) => writeJSON(AuthorsPath, content);
