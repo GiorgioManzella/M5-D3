@@ -2,7 +2,9 @@ export const badRequestErrorHandler = (err, req, res, next) => {
   console.log("this is the error", err);
 
   if (err.status === 400) {
-    res.status(400).send({ message: "err.message", error: "err.errorsList" });
+    res.status(400).send({
+      errorCode: "casa",
+    });
   } else {
     next(err);
   }

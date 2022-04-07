@@ -1,59 +1,68 @@
 import express from "express";
-import fs from "fs";
+import fs from "fs-extra";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import uniqid from "uniqid";
 import createError from "http-errors";
+import { CheckBlogPostSchema, CheckValidationResult } from "./validation.js";
 
 const BlogPostsRouter = express.Router();
 
 const BlogPostsPath = join(
   dirname(fileURLToPath(import.meta.url)),
-  "BlogPosts.json"
+  "../Data/BlogPosts.json"
 );
+
+const BlogPostsArray = JSON.parse(fs.readFileSync(BlogPostsPath));
+
+const writeBlogPost = (content) =>
+  fs.writeFileSync(BlogPostsPath, JSON.stringify(BlogPostsArray));
 
 // POST REQUEST
 
-BlogPostsRouter.post("/", (req, res, next) => {
-  try {
-    const BlogPost = {
-      ...req.body,
+const async = () =>
+  BlogPostsRouter.post(
+    "/",
+    CheckBlogPostSchema,
+    CheckValidationResult,
+    (req, res, next) => {
+      try {
+        const BlogPost = {
+          ...req.body,
 
-      id: uniqid(),
-      category: req.body.category,
-      title: req.body.title,
-      cover: req.body.cover,
-      readTime: {
-        value: req.body.readTime.value,
-        unit: req.body.readTime.unit,
-      },
-      author: {
-        name: req.body.author.name,
-        avatar: req.body.author.avatar,
-      },
-      content: BlogPostsPath,
-      createAt: new Date(),
-    };
+          id: uniqid(),
+          category: req.body.category,
+          title: req.body.title,
+          cover: req.body.cover,
+          readTime: {
+            value: req.body.readTime.value,
+            unit: req.body.readTime.unit,
+          },
+          author: {
+            name: req.body.author.name,
+            avatar: req.body.author.avatar,
+          },
+          content: BlogPostsPath,
+          createAt: new Date(),
+        };
 
-    console.log(`New blogPost has been added : ${req.body.title}`);
+        console.log(`New blogPost has been added : ${req.body.title}`);
 
-    const BlogPostsArray = JSON.parse(fs.readFileSync(BlogPostsPath));
-    console.log("LOOOOOOOOOOOOOOOOOO", BlogPostsArray);
-    BlogPostsArray.push(BlogPost);
-    fs.writeFileSync(BlogPostsPath, JSON.stringify(BlogPostsArray));
+        BlogPostsArray.push(BlogPost);
+        writeBlogPost(BlogPostsArray);
 
-    res.status(201).send("New post created!");
-  } catch (error) {
-    next(error);
-  }
-});
+        res.status(201).send("New post created!");
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
 
 //GET REQUEST
 
-BlogPostsRouter.get("/", (req, res, next) => {
+BlogPostsRouter.get("/", async (req, res, next) => {
   try {
-    const BlogPostsArray = JSON.parse(fs.readFileSync(BlogPostsPath));
-
+    const BlogPosts = await BlogPostsArray;
     res.send(BlogPostsArray);
   } catch (error) {
     next(error);
@@ -64,11 +73,9 @@ BlogPostsRouter.get("/", (req, res, next) => {
 
 BlogPostsRouter.get("/:BlogPostId", (req, res, next) => {
   try {
-    const BlogPostArray = JSON.parse(fs.readFileSync(BlogPostsPath));
-
     const BlogPostId = req.params.BlogPostId;
 
-    const selectedBlog = BlogPostArray.find(
+    const selectedBlog = BlogPostsArray.find(
       (element) => element.id === BlogPostId
     );
 
@@ -85,19 +92,17 @@ BlogPostsRouter.get("/:BlogPostId", (req, res, next) => {
 //PUT REQUEST
 BlogPostsRouter.put("/:BlogPostId", (req, res, next) => {
   try {
-    const BlogPostArray = JSON.parse(fs.readFileSync(BlogPostsPath));
-
     const index = BlogPostArray.findIndex(
       (BlogPost) => BlogPost.id === req.params.BlogPostId
     );
-    const oldBlogPost = BlogPostArray[index];
+    const oldBlogPost = BlogPostsArray[index];
     const updatedBlogPost = {
       ...oldBlogPost,
       ...req.body,
       updatedAt: new Date(),
     };
 
-    BlogPostArray[index] = updatedBlogPost;
+    BlogPostsArray[index] = updatedBlogPost;
 
     fs.writeFileSync(BlogPostsPath, JSON.stringify(BlogPostArray));
 
@@ -110,9 +115,7 @@ BlogPostsRouter.put("/:BlogPostId", (req, res, next) => {
 //DELETE REQUEST + ID
 BlogPostsRouter.delete("/:BlogPostId", (req, res, next) => {
   try {
-    const BlogPostArray = JSON.parse(fs.readFileSync(BlogPostsPath));
-
-    const BlogPostLeft = BlogPostArray.filter(
+    const BlogPostLeft = BlogPostsArray.filter(
       (BlogPost) => BlogPost.id !== req.params.BlogPostId
     );
 
