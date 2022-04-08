@@ -7,6 +7,8 @@ import createError from "http-errors";
 import { CheckBlogPostSchema, CheckValidationResult } from "./validation.js";
 import { getBlogPost, writeBlogPost } from "../lib/fs-tools.js";
 
+import multer from "multer";
+
 const BlogPostsRouter = express.Router();
 
 const BlogPostsPath = join(
@@ -175,3 +177,20 @@ BlogPostsRouter.delete("/:BlogPostId", async (req, res, next) => {
 });
 
 export default BlogPostsRouter;
+
+//POST METHOD Cover + ID
+
+BlogPostsRouter.post(
+  "/:BlogSpotsId/Cover",
+  multer().single("Cover"),
+  async (req, res, next) => {
+    try {
+      await storeBlogSpotCover(
+        `${req.params.blogPostsId}.gif`,
+        req.file.buffer
+      );
+
+      res.status(201).send({ message: "image Uploaded successfully" });
+    } catch (error) {}
+  }
+);
