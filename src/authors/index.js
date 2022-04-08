@@ -3,6 +3,8 @@ import uniqid from "uniqid";
 import { getAuthors, writeAuthors } from "../lib/fs-tools.js";
 import multer from "multer";
 
+import { storeAuthorsAvatars } from "../lib/fs-tools.js";
+
 const authorsRouter = express.Router();
 
 //const currentFilePath = fileURLToPath(import.meta.url);
@@ -43,7 +45,7 @@ authorsRouter.get("/", async (req, res, next) => {
 // GET METHOD  + ID
 authorsRouter.get("/:authorId", async (req, res, next) => {
   try {
-    const authorId = req.params.authorsId;
+    const authorId = req.params.authorId;
 
     const authorsArray = await getAuthors();
 
@@ -88,3 +90,20 @@ authorsRouter.delete("/:authorId", async (req, res) => {
 });
 
 export default authorsRouter;
+
+//POST METHOD IMAGE + ID
+
+authorsRouter.post(
+  "/:authorsId/Avatar",
+  multer().single("Avatar"),
+  async (req, res, next) => {
+    try {
+      await storeAuthorsAvatars(`${req.params.authorsId}.gif`, req.file.buffer);
+
+      res.status(201).send({ message: "image Uploaded successfully" });
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+);

@@ -59,7 +59,6 @@ BlogPostsRouter.post(
         createAt: new Date(),
       };
       const BlogPostId = req.params.BlogPostId;
-
       const BlogPostArray = await getBlogPost();
 
       const selectedBlog = await BlogPostArray.find(
@@ -67,16 +66,10 @@ BlogPostsRouter.post(
       );
 
       if (selectedBlog) {
-        // not an array  ----------- selectedBlog.push(BlogPostComment);
-
-        const newSelectedBlogPost = [];
-
-        newSelectedBlogPost.values(selectedBlog);
-
-        console.log(newSelectedBlogPost);
-
+        // can't use push as is an object--------------------selectedBlog.push(BlogPostComment);
+        selectedBlog["comment"] = BlogPostComment;
+        console.log(selectedBlog);
         writeBlogPost(BlogPostArray);
-
         res.status(201).send("New COmment has been added");
       }
     } catch (error) {
