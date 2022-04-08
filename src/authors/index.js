@@ -1,75 +1,90 @@
 import express from "express";
-import fs from "fs";
-import { dirname, join } from "path";
-import { fileURLToPath } from "url";
 import uniqid from "uniqid";
+import { getAuthors, writeAuthors } from "../lib/fs-tools.js";
+import multer from "multer";
 
 const authorsRouter = express.Router();
 
-const currentFilePath = fileURLToPath(import.meta.url);
-const parentFolder = dirname(currentFilePath);
-const authorsJsonPath = join(parentFolder, "../Data/authors.json");
+//const currentFilePath = fileURLToPath(import.meta.url);
+//const parentFolder = dirname(currentFilePath);
+//const authorsJsonPath = join(parentFolder, "../Data/authors.json");
 
-authorsRouter.post("/", async (req, res) => {
-  const newAuthor = {
-    ...req.body,
-    createAt: new Date(),
-    id: uniqid(),
-    name: req.body.name,
-    surname: req.body.surname,
-    email: req.body.email,
-    DoB: req.body.email,
-    avatar: req.body.avatar,
-  };
+//POST METHOD
+authorsRouter.post("/", async (req, res, next) => {
+  try {
+    const newAuthor = {
+      ...req.body,
+      createAt: new Date(),
+      id: uniqid(),
+    };
 
-  const authorsArray = await getBlogPost();
+    const authorsArray = await getAuthors();
+    await authorsArray.push(newAuthor);
+    writeAuthors(authorsArray);
 
-  authorsArray.push(newAuthor);
-
-  //fs.writeFileSync(authorsJsonPath, JSON.stringify(authorsArray));
-
-  await writeAuthors(authorsArray);
-
-  res.status(201).send({ id: newAuthor });
+    res.status(201).send("Author successfully created");
+  } catch (error) {
+    next(error);
+  }
 });
 
-authorsRouter.get("/", (req, res) => {
-  const fileContent = fs.readFileSync(authorsJsonPath);
+//gET METHOD
 
-  const authorsArray = JSON.parse(fileContent);
+authorsRouter.get("/", async (req, res, next) => {
+  try {
+    const authorsArray = await getAuthors();
 
-  res.send(authorsArray);
+    res.send(authorsArray);
+  } catch (error) {
+    next(error);
+  }
 });
 
-authorsRouter.get("/:authorsId", (req, res) => {
-  const authorId = req.params.authorsId;
+// GET METHOD  + ID
+authorsRouter.get("/:authorId", async (req, res, next) => {
+  try {
+    const authorId = req.params.authorsId;
 
-  const authorsArray = JSON.parse(fs.readFileSync(authorsJsonPath));
+    const authorsArray = await getAuthors();
 
-  const currentAuthor = authorsArray.find((author) => author.id === authorId);
+    const currentAuthor = authorsArray.find((author) => author.id === authorId);
 
-  res.send(currentAuthor);
+    res.send(currentAuthor);
+  } catch (error) {
+    next(error);
+  }
 });
 
-authorsRouter.put("/:authorsId", (req, res) => {
-  const authorsArray = JSON.parse(fs.readFileSync(authorsJsonPath));
-  const currentAuthor = authorsArray.findIndex(
-    (author) => author.id === req.params.authorsId
-  );
-  const oldAuthor = authorsArray[currentAuthor];
-  const updatedAuthor = { ...oldAuthor, ...req.body, updatedAt: new Date() };
+// PUT METHOD + ID
+authorsRouter.put("/:authorId", async (req, res, next) => {
+  try {
+    const authorsArray = await getAuthors();
+    const currentAuthor = authorsArray.findIndex(
+      (author) => author.id === req.params.authorId
+    );
+    const oldAuthor = authorsArray[currentAuthor];
+    const updatedAuthor = { ...oldAuthor, ...req.body, updatedAt: new Date() };
 
-  res.send(updatedAuthor);
+    res.send(updatedAuthor);
+  } catch (error) {
+    next(error);
+  }
 });
 
-authorsRouter.delete("/:authorsId", (req, res) => {
-  const authorId = req.params.authorsId;
-  const authorsArray = JSON.parse(fs.readFileSync(authorsJsonPath));
-  const remainingAuthors = authorsArray.filter(
-    (author) => author.id !== authorId
-  );
+// DELETE METHOD
 
-  res.send(remainingAuthors);
+authorsRouter.delete("/:authorId", async (req, res) => {
+  try {
+    const authorId = req.params.authorId;
+    const authorsArray = getAuthors();
+    const remainingAuthors = authorsArray.filter(
+      (author) => author.id !== authorId
+    );
+
+    res.send(remainingAuthors);
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default authorsRouter;

@@ -14,11 +14,6 @@ const BlogPostsPath = join(
   "../Data/BlogPosts.json"
 );
 
-//const BlogPostsArray = JSON.parse(fs.readFileSync(BlogPostsPath));
-
-//const writeBlogPost = (content) =>
-// fs.writeFileSync(BlogPostsPath, JSON.stringify(BlogPostsArray));
-
 // POST REQUEST
 
 BlogPostsRouter.post(
@@ -32,18 +27,7 @@ BlogPostsRouter.post(
         ...req.body,
 
         id: uniqid(),
-        category: req.body.category,
-        title: req.body.title,
-        cover: req.body.cover,
-        readTime: {
-          value: req.body.readTime.value,
-          unit: req.body.readTime.unit,
-        },
-        author: {
-          name: req.body.author.name,
-          avatar: req.body.author.avatar,
-        },
-        content: "",
+
         createAt: new Date(),
       };
 
@@ -69,20 +53,8 @@ BlogPostsRouter.post(
     try {
       const BlogPost = {
         ...req.body,
-
         id: uniqid(),
-        category: req.body.category,
-        title: req.body.title,
-        cover: req.body.cover,
-        readTime: {
-          value: req.body.readTime.value,
-          unit: req.body.readTime.unit,
-        },
-        author: {
-          name: req.body.author.name,
-          avatar: req.body.author.avatar,
-        },
-        content: "",
+
         createAt: new Date(),
       };
 
@@ -124,6 +96,28 @@ BlogPostsRouter.get("/:BlogPostId", async (req, res, next) => {
 
     if (selectedBlog) {
       res.send(selectedBlog);
+    } else {
+      next(createError(404, `Blog post ${req.params.BlogPostId} not found `));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+//GET REQUEST ++ ID ++COMMENTS
+
+BlogPostsRouter.get("/:BlogPostId/Comments", async (req, res, next) => {
+  try {
+    const BlogPostId = req.params.BlogPostId;
+
+    const BlogPostsArray = await getBlogPost();
+
+    const selectedBlog = BlogPostsArray.find(
+      (element) => element.id === BlogPostId
+    );
+
+    if (selectedBlog) {
+      res.send(selectedBlog.comments);
     } else {
       next(createError(404, `Blog post ${req.params.BlogPostId} not found `));
     }
