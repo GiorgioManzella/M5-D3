@@ -5,7 +5,11 @@ import { fileURLToPath } from "url";
 import uniqid from "uniqid";
 import createError from "http-errors";
 import { CheckBlogPostSchema, CheckValidationResult } from "./validation.js";
-import { getBlogPost, writeBlogPost } from "../lib/fs-tools.js";
+import {
+  getBlogPost,
+  writeBlogPost,
+  saveBlogSpotCovers,
+} from "../lib/fs-tools.js";
 
 import multer from "multer";
 
@@ -185,7 +189,7 @@ BlogPostsRouter.post(
   multer().single("Cover"),
   async (req, res, next) => {
     try {
-      await storeBlogSpotCover(
+      await saveBlogSpotCovers(
         `${req.params.blogPostsId}.gif`,
         req.file.buffer
       );
