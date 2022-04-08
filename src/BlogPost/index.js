@@ -45,7 +45,7 @@ BlogPostsRouter.post(
   }
 );
 
-// post with id for image------------------------------------------DONE-------------------
+// post with id for image------------------------------------------TO DO THIS-------------------
 
 BlogPostsRouter.post(
   "/:BlogPostId",
@@ -125,12 +125,10 @@ BlogPostsRouter.get("/", async (req, res, next) => {
 
 BlogPostsRouter.get("/:BlogPostId", async (req, res, next) => {
   try {
-    const BlogPostId = req.params.BlogPostId;
-
     const BlogPostsArray = await getBlogPost();
 
     const selectedBlog = BlogPostsArray.find(
-      (element) => element.id === BlogPostId
+      (element) => element.id === req.params.BlogPostId
     );
 
     if (selectedBlog) {
