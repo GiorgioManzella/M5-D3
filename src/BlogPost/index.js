@@ -14,7 +14,7 @@ const BlogPostsPath = join(
   "../Data/BlogPosts.json"
 );
 
-// POST REQUEST
+// POST REQUEST-----------------------------------------------DONE----------------
 
 BlogPostsRouter.post(
   "/",
@@ -45,7 +45,8 @@ BlogPostsRouter.post(
   }
 );
 
-// post with id for image
+// post with id for image------------------------------------------DONE-------------------
+
 BlogPostsRouter.post(
   "/:BlogPostId",
 
@@ -71,7 +72,45 @@ BlogPostsRouter.post(
     }
   }
 );
-//GET REQUEST
+
+// post with id for COMMENTS --------------------------------------WORKING--------------------
+
+BlogPostsRouter.post(
+  "/:BlogPostId/Comments",
+
+  async (req, res, next) => {
+    try {
+      const BlogPostComment = {
+        ...req.body,
+        id: uniqid(),
+
+        createAt: new Date(),
+      };
+      const BlogPostId = req.params.BlogPostId;
+
+      const BlogPostArray = await getBlogPost();
+
+      const selectedBlog = await BlogPostArray.find(
+        (element) => element.id === BlogPostId
+      );
+      // now I have the object
+      if (selectedBlog) {
+        //const arrayOfSelectedBlog = selectedBlog.entries(selectedBlog);
+
+        selectedBlog["comments"] = BlogPostComment;
+
+        //selectedBlog.push(BlogPostComment);
+        writeBlogPost(selectedBlog);
+
+        res.status(201).send("New COmment has been added");
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+//GET REQUEST--------------------------------------------DONE--------------
 
 BlogPostsRouter.get("/", async (req, res, next) => {
   try {
@@ -82,7 +121,7 @@ BlogPostsRouter.get("/", async (req, res, next) => {
   }
 });
 
-//GET REQUEST ++ ID
+//GET REQUEST ++ ID------------------------------------------DONE------------------
 
 BlogPostsRouter.get("/:BlogPostId", async (req, res, next) => {
   try {
@@ -104,7 +143,7 @@ BlogPostsRouter.get("/:BlogPostId", async (req, res, next) => {
   }
 });
 
-//GET REQUEST ++ ID ++COMMENTS
+//GET REQUEST ++ ID ++COMMENTS---------------------------------DONE--------------------
 
 BlogPostsRouter.get("/:BlogPostId/Comments", async (req, res, next) => {
   try {
@@ -126,7 +165,8 @@ BlogPostsRouter.get("/:BlogPostId/Comments", async (req, res, next) => {
   }
 });
 
-//PUT REQUEST
+//PUT REQUEST---------------------------------------DONE-----------------------
+
 BlogPostsRouter.put("/:BlogPostId", async (req, res, next) => {
   try {
     const BlogPostArray = await getBlogPost();
@@ -150,7 +190,8 @@ BlogPostsRouter.put("/:BlogPostId", async (req, res, next) => {
   }
 });
 
-//DELETE REQUEST + ID
+//DELETE REQUEST + ID--------------------------------DONE------------------------
+
 BlogPostsRouter.delete("/:BlogPostId", async (req, res, next) => {
   try {
     const BlogPostsArray = await getBlogPost();
