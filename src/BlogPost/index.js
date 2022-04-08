@@ -45,34 +45,6 @@ BlogPostsRouter.post(
   }
 );
 
-// post with id for image------------------------------------------TO DO THIS-------------------
-
-BlogPostsRouter.post(
-  "/:BlogPostId",
-
-  async (req, res, next) => {
-    try {
-      const BlogPost = {
-        ...req.body,
-        id: uniqid(),
-
-        createAt: new Date(),
-      };
-
-      console.log(`New blogPost has been added : ${req.body.title}`);
-
-      const BlogPostArray = await getBlogPost();
-
-      BlogPostArray.push(BlogPost);
-      writeBlogPost(BlogPostArray);
-
-      res.status(201).send("New post created!");
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
 // post with id for COMMENTS --------------------------------------WORKING--------------------
 
 BlogPostsRouter.post(
@@ -93,14 +65,17 @@ BlogPostsRouter.post(
       const selectedBlog = await BlogPostArray.find(
         (element) => element.id === BlogPostId
       );
-      // now I have the object
+
       if (selectedBlog) {
-        //const arrayOfSelectedBlog = selectedBlog.entries(selectedBlog);
+        // not an array  ----------- selectedBlog.push(BlogPostComment);
 
-        selectedBlog["comments"] = BlogPostComment;
+        const newSelectedBlogPost = [];
 
-        //selectedBlog.push(BlogPostComment);
-        writeBlogPost(selectedBlog);
+        newSelectedBlogPost.values(selectedBlog);
+
+        console.log(newSelectedBlogPost);
+
+        writeBlogPost(BlogPostArray);
 
         res.status(201).send("New COmment has been added");
       }
