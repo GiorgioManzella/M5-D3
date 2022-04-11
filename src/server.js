@@ -12,11 +12,23 @@ import {
 } from "./errorHandler.js";
 
 const server = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 //middlewares
+const whitelist = [process.env.FE_DEV_URL, process.env.BE_DEV_URL];
 
-server.use(cors());
+server.use(
+  cors({
+    origin: function (origin, next) {
+      console.log("ORIGIN", origin);
+      if (!origin || whitelist.indexOf(origin) !== -1) {
+        next();
+      } else {
+        next(createError(400, "cons error"));
+      }
+    },
+  })
+);
 server.use(express.json());
 
 //endopoints
@@ -36,3 +48,5 @@ server.listen(port, () => {
   console.table(listEndpoints(server));
   console.log(`server is running on ${port}`);
 });
+
+const dburl = "";
