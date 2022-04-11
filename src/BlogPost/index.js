@@ -194,6 +194,8 @@ BlogPostsRouter.post(
         req.file.buffer
       );
 
+      const BlogPostArray = await getBlogPost();
+
       res.status(201).send({ message: "image Uploaded successfully" });
     } catch (error) {}
   }
