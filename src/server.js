@@ -17,6 +17,8 @@ const port = process.env.PORT || 3001;
 //middlewares
 const whitelist = [process.env.FE_DEV_URL, process.env.BE_DEV_URL];
 
+console.log(whitelist);
+
 server.use(
   cors({
     origin: function (origin, next) {
