@@ -13,6 +13,12 @@ import {
 
 import multer from "multer";
 
+
+import {getPdfReadableStreams} from "../BlogPost/downloadPDF.js"
+import { pipeline } from "stream";
+
+
+
 const BlogPostsRouter = express.Router();
 
 const BlogPostsPath = join(
@@ -200,3 +206,30 @@ BlogPostsRouter.post(
     } catch (error) {}
   }
 );
+
+
+
+// downloadPDF
+
+
+BlogPostsRouter.get("/:BlogSportsId/DownloadPdf", (req, res, next) => {
+
+  try {
+    res.setHeader('Content-Disposition", "attachment; filename=whatever.json.gz')
+    
+    const source = getPdfReadableStreams()
+    const transform = createGzip()
+    const destination = res
+
+pipeline(source, transform, destination, err) => {
+  if (err) console.log(err);
+}   
+  }catch (error){
+    console.log(error);
+}
+
+  } catch (error) {
+    
+  }
+
+})
