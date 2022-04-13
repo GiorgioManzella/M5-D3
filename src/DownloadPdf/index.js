@@ -1,6 +1,6 @@
 import express from "express";
 import pipeline from "stream";
-import { getPdfReadableStream } from "../BlogPost/downloadPDF.js";
+import { getPdfReadableStream } from "../lib/fs-tools.js";
 import { createGzip } from "zlib";
 
 const pdfRoute = express.Router();
