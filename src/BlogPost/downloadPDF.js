@@ -2,9 +2,9 @@ import pdfPrinter from "pdfmake";
 
 export const getPdfReadableStream = (data) => {
   const fonts = {
-    Roboto: {
-      normal: "fonts/Roboto-Regular.ttf",
-      bold: "fonts/Roboto-Medium.ttf",
+    Helvetica: {
+      normal: "Helvetica",
+      bold: "Helvetica-Bold",
     },
   };
 
