@@ -16,22 +16,15 @@ const server = express();
 const port = process.env.PORT || 3001;
 
 //middlewares
-const whitelist = [process.env.FE_DEV_URL, process.env.BE_DEV_URL];
+const whitelist = [
+  process.env.FE_DEV_URL,
+  process.env.BE_DEV_URL,
+  process.env.FRONT,
+];
 
 console.log(whitelist);
 
-server.use(
-  cors({
-    origin: function (origin, next) {
-      console.log("ORIGIN", origin);
-      if (!origin || whitelist.indexOf(origin) !== -1) {
-        next();
-      } else {
-        next(createError(400, "cons error"));
-      }
-    },
-  })
-);
+server.use(cors({}));
 server.use(express.json());
 
 //endopoints
