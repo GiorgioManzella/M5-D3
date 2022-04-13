@@ -10,6 +10,22 @@ export const getPdfReadableStream = (data) => {
 
   const docDefinition = {
     content: ["first paragraph", data],
+    styles: {
+      header: {
+        fontSize: 18,
+        bold: true,
+      },
+      subheader: {
+        fontSize: 15,
+        bold: true,
+      },
+      small: {
+        fontSize: 8,
+      },
+    },
+    defaultStyle: {
+      font: "Helvetica",
+    },
   };
 
   const printer = new pdfPrinter(fonts);
