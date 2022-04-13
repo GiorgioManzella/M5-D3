@@ -1,5 +1,5 @@
 import express from "express";
-import pipeline from "stream";
+import { pipeline } from "stream";
 import { getPdfReadableStream } from "../lib/fs-tools.js";
 import { createGzip } from "zlib";
 
