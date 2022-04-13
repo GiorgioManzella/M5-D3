@@ -8,7 +8,8 @@ const pdfRoute = express.Router();
 pdfRoute.get("/DownloadPdf", (req, res, next) => {
   try {
     res.setHeader(
-      'Content-Disposition", "attachment; filename=whatever.json.gz'
+      "Content-Disposition",
+      "attachment; filename=whatever.json.gz"
     );
 
     const source = getPdfReadableStream();
