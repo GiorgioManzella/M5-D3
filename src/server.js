@@ -10,6 +10,7 @@ import {
   unauthorizedErrorHandler,
   notFoundErrorHandler,
 } from "./errorHandler.js";
+import pdfRoute from "./DownloadPdf/index.js";
 
 const server = express();
 const port = process.env.PORT || 3001;
@@ -34,7 +35,7 @@ server.use(
 server.use(express.json());
 
 //endopoints
-
+server.use("/pdf", pdfRoute);
 server.use("/authors", authorsRouter);
 server.use("/BlogPosts", BlogPostsRouter);
 
