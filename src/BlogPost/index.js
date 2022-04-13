@@ -206,7 +206,7 @@ BlogPostsRouter.post(
 
 // downloadPDF
 
-BlogPostsRouter.get("/:BlogSportsId/DownloadPdf", (req, res, next) => {
+BlogPostsRouter.get("/DownloadPdf", (req, res, next) => {
   try {
     res.setHeader(
       'Content-Disposition", "attachment; filename=whatever.json.gz'
@@ -219,7 +219,5 @@ BlogPostsRouter.get("/:BlogSportsId/DownloadPdf", (req, res, next) => {
     pipeline(source, transform, destination, (err) => {
       if (err) console.log(err);
     });
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 });
