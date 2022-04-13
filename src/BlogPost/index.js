@@ -13,11 +13,8 @@ import {
 
 import multer from "multer";
 
-
-import {getPdfReadableStreams} from "../BlogPost/downloadPDF.js"
+import { getPdfReadableStream } from "./downloadPDF.js";
 import { pipeline } from "stream";
-
-
 
 const BlogPostsRouter = express.Router();
 
@@ -207,29 +204,22 @@ BlogPostsRouter.post(
   }
 );
 
-
-
 // downloadPDF
 
-
 BlogPostsRouter.get("/:BlogSportsId/DownloadPdf", (req, res, next) => {
-
   try {
-    res.setHeader('Content-Disposition", "attachment; filename=whatever.json.gz')
-    
-    const source = getPdfReadableStreams()
-    const transform = createGzip()
-    const destination = res
+    res.setHeader(
+      'Content-Disposition", "attachment; filename=whatever.json.gz'
+    );
 
-pipeline(source, transform, destination, err) => {
-  if (err) console.log(err);
-}   
-  }catch (error){
-    console.log(error);
-}
+    const source = getPdfReadableStream("hello");
+    const transform = createGzip();
+    const destination = res;
 
+    pipeline(source, transform, destination, (err) => {
+      if (err) console.log(err);
+    });
   } catch (error) {
-    
+    console.log(error);
   }
-
-})
+});
