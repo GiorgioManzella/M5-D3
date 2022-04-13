@@ -35,3 +35,7 @@ export const getAuthors = () => readJSON(AuthorsPath);
 export const writeAuthors = (content) => writeJSON(AuthorsPath, content);
 export const storeAuthorsAvatars = (filename, contentAsBuffer) =>
   writeFile(join(authorsPubblicFolderPath, filename), contentAsBuffer);
+
+//
+
+export const getPdfReadableStream = () => fs.createReadStream(BlogPostsPath);
