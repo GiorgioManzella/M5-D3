@@ -206,7 +206,7 @@ BlogPostsRouter.post(
 
 // downloadPDF
 
-BlogPostsRouter.get("/DownloadPdf", (req, res, next) => {
+BlogPostsRouter.get("/:DownloadPdf", (req, res, next) => {
   try {
     res.setHeader(
       'Content-Disposition", "attachment; filename=whatever.json.gz'
